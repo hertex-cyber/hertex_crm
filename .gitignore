@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.db
+
+# Django
+backend/staticfiles/
+backend/media/
+*.mo
+*.pot
+
+# Environment
+.env
+.env.local
+.env.production
+.env.staging
+*.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
+# Terraform
+infra/terraform/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+crash.log
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Secrets
+**/secrets/
+**/vault/
+
+# AI
+ai_gateway/models/
+*.gguf

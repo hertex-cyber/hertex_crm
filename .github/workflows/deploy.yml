@@ -1,0 +1,77 @@
+name: Deploy — Staging & Production
+
+on:
+  workflow_run:
+    workflows: ["CI — Lint, Typecheck, Test, Build"]
+    branches: [main, develop]
+    types:
+      - completed
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER_STAGING: tzahu-staging
+  EKS_CLUSTER_PROD: tzahu-prod
+
+jobs:
+  deploy-staging:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/develop' }}
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/amazon-eks-iam-auth@v1
+      - uses: aws-actions/kubectl-action@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG_STAGING }}
+      - name: Deploy to staging
+        run: |
+          kubectl set image deployment/backend backend=${{ secrets.ECR_REGISTRY }}/tzahu-backend:${{ github.sha }} -n staging
+          kubectl set image deployment/celery-worker celery-worker=${{ secrets.ECR_REGISTRY }}/tzahu-backend:${{ github.sha }} -n staging
+          kubectl set image deployment/frontend frontend=${{ secrets.ECR_REGISTRY }}/tzahu-frontend:${{ github.sha }} -n staging
+          kubectl rollout status deployment/backend -n staging
+          kubectl rollout status deployment/celery-worker -n staging
+          kubectl rollout status deployment/frontend -n staging
+      - name: Smoke tests
+        run: |
+          curl -f https://staging.api.tzahu.com/health/
+          curl -f https://staging.app.tzahu.com/
+
+  deploy-production:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: production
+    needs: deploy-staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/amazon-eks-iam-auth@v1
+      - uses: aws-actions/kubectl-action@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG_PROD }}
+      - name: Deploy to production
+        run: |
+          kubectl set image deployment/backend backend=${{ secrets.ECR_REGISTRY }}/tzahu-backend:${{ github.sha }} -n production
+          kubectl set image deployment/celery-worker celery-worker=${{ secrets.ECR_REGISTRY }}/tzahu-backend:${{ github.sha }} -n production
+          kubectl set image deployment/frontend frontend=${{ secrets.ECR_REGISTRY }}/tzahu-frontend:${{ github.sha }} -n production
+          kubectl rollout status deployment/backend -n production
+          kubectl rollout status deployment/celery-worker -n production
+          kubectl rollout status deployment/frontend -n production
+      - name: Smoke tests
+        run: |
+          curl -f https://api.tzahu.com/health/
+          curl -f https://app.tzahu.com/
+      - name: Sentry release
+        run: |
+          curl -X POST https://sentry.io/api/0/organizations/tzahu/releases/ \
+            -H "Authorization: Bearer ${{ secrets.SENTRY_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"version\": \"${{ github.sha }}\", \"projects\": [\"tzahu-backend\", \"tzahu-frontend\"]}"

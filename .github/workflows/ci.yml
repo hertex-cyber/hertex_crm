@@ -1,0 +1,164 @@
+name: CI — Lint, Typecheck, Test, Build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  DJANGO_SETTINGS_MODULE: config.settings.dev
+  POSTGRES_DB: tzahu_test
+  POSTGRES_USER: tzahu_test
+  POSTGRES_PASSWORD: tzahu_test
+  POSTGRES_HOST: localhost
+  POSTGRES_PORT: 5432
+  REDIS_URL: redis://localhost:6379/0
+  RABBITMQ_URL: amqp://guest:guest@localhost:5672//
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          cd backend && poetry install --no-interaction
+      - name: Ruff lint
+        run: cd backend && poetry run ruff check .
+      - name: Ruff format check
+        run: cd backend && poetry run ruff format --check .
+      - name: Pre-commit
+        run: pip install pre-commit && pre-commit run --all-files || true
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          cd backend && poetry install --no-interaction
+      - name: mypy
+        run: cd backend && poetry run mypy apps config --strict --ignore-missing-imports
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: tzahu_test
+          POSTGRES_USER: tzahu_test
+          POSTGRES_PASSWORD: tzahu_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      rabbitmq:
+        image: rabbitmq:4-alpine
+        ports:
+          - 5672:5672
+        options: >-
+          --health-cmd "rabbitmq-diagnostics check_port_connectivity"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          cd backend && poetry install --no-interaction
+      - name: Run migrations
+        run: cd backend && poetry run python manage.py migrate
+      - name: Run tests
+        run: cd backend && poetry run pytest --cov=apps --cov-report=term --cov-report=xml
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: backend/coverage.xml
+
+  import-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          cd backend && poetry install --no-interaction
+      - name: Import linter
+        run: cd backend && poetry run lint-imports
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          pip install poetry bandit safety
+          cd backend && poetry install --no-interaction
+      - name: Bandit security scan
+        run: cd backend && poetry run bandit -r apps -x tests -ll
+      - name: Safety dependency scan
+        run: cd backend && poetry run safety check
+
+  build:
+    needs: [lint, typecheck, test, import-lint, security-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        if: github.ref == 'refs/heads/main'
+      - name: Build and push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ secrets.ECR_REGISTRY }}/tzahu-backend:latest
+            ${{ secrets.ECR_REGISTRY }}/tzahu-backend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Build and push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ secrets.ECR_REGISTRY }}/tzahu-frontend:latest
+            ${{ secrets.ECR_REGISTRY }}/tzahu-frontend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

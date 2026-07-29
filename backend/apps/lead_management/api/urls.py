@@ -1,0 +1,41 @@
+from django.urls import path
+
+from .views import (
+    LeadAssignView,
+    LeadCallLogView,
+    LeadCommunicationListView,
+    LeadConvertView,
+    LeadDetailView,
+    LeadDuplicateView,
+    LeadEmailSendView,
+    LeadListCreateView,
+    LeadScoreView,
+    LeadStageChangeView,
+    LeadStageDetailView,
+    LeadStageListCreateView,
+    LeadStageReorderView,
+    LeadStatusView,
+    LeadWhatsAppSendView,
+    PipelineDetailView,
+    PipelineListCreateView,
+)
+
+urlpatterns = [
+    path("", LeadListCreateView.as_view(), name="lead-list"),
+    path("duplicates", LeadDuplicateView.as_view(), name="lead-duplicates"),
+    path("pipelines", PipelineListCreateView.as_view(), name="pipeline-list"),
+    path("pipelines/<uuid:pipeline_id>", PipelineDetailView.as_view(), name="pipeline-detail"),
+    path("stages", LeadStageListCreateView.as_view(), name="lead-stage-list"),
+    path("stages/reorder", LeadStageReorderView.as_view(), name="lead-stage-reorder"),
+    path("stages/<uuid:stage_id>", LeadStageDetailView.as_view(), name="lead-stage-detail"),
+    path("<uuid:lead_id>", LeadDetailView.as_view(), name="lead-detail"),
+    path("<uuid:lead_id>/assign", LeadAssignView.as_view(), name="lead-assign"),
+    path("<uuid:lead_id>/status", LeadStatusView.as_view(), name="lead-status"),
+    path("<uuid:lead_id>/stage", LeadStageChangeView.as_view(), name="lead-stage-change"),
+    path("<uuid:lead_id>/score", LeadScoreView.as_view(), name="lead-score"),
+    path("<uuid:lead_id>/convert", LeadConvertView.as_view(), name="lead-convert"),
+    path("<uuid:lead_id>/communications", LeadCommunicationListView.as_view(), name="lead-communications"),
+    path("<uuid:lead_id>/send-email", LeadEmailSendView.as_view(), name="lead-send-email"),
+    path("<uuid:lead_id>/send-whatsapp", LeadWhatsAppSendView.as_view(), name="lead-send-whatsapp"),
+    path("<uuid:lead_id>/log-call", LeadCallLogView.as_view(), name="lead-log-call"),
+]
