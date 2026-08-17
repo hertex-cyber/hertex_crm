@@ -16,8 +16,12 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: [".monkeycode-ai.live"],
     proxy: {
-      "/api": "http://localhost:8000",
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
     },
   },
 });

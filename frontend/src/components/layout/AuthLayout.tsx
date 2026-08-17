@@ -2,51 +2,83 @@ import { Outlet, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import CheckIcon from "@mui/icons-material/Check";
 import { useAuthStore } from "@store/authStore";
 
 const lightTheme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: "#7C5CFC", light: "#9B7FFD", dark: "#5A3FD6" },
-    text: { primary: "#1A1A2E", secondary: "#6B7280" },
-    background: { default: "#F8F9FC", paper: "#FFFFFF" },
-    divider: "rgba(0,0,0,0.06)",
+    primary: { main: "#F97316", light: "#FDBA74", dark: "#EA580C" },
+    text: { primary: "#111827", secondary: "#6B7280" },
+    background: { default: "#FFFFFF", paper: "#FFFFFF" },
+    divider: "#E5E7EB",
   },
-  typography: { fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif' },
-  shape: { borderRadius: 12 },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.03em" },
+    h2: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.025em" },
+    h3: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.02em" },
+    h4: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.02em" },
+    h5: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.01em" },
+    h6: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 600 },
+  },
+  shape: { borderRadius: 10 },
   components: {
     MuiButton: {
       styleOverrides: {
-        root: { textTransform: "none", fontWeight: 600, borderRadius: 10, fontSize: "0.9rem" },
+        root: { textTransform: "none", fontWeight: 600, borderRadius: 8, fontSize: "0.9rem" },
         contained: { boxShadow: "none", "&:hover": { boxShadow: "none" } },
-        outlined: { borderColor: "rgba(0,0,0,0.1)" },
+        outlined: { borderColor: "#E5E7EB" },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
-            borderRadius: 10,
-            backgroundColor: "#F9FAFB",
-            "&:hover": { backgroundColor: "#FFF" },
-            "&.Mui-focused": { backgroundColor: "#FFF" },
+            borderRadius: 6,
+            backgroundColor: "#FFFFFF",
+            "&:hover": { backgroundColor: "#FFFFFF" },
+            "&.Mui-focused": { backgroundColor: "#FFFFFF" },
+          },
+          "& .MuiInputLabel-root": { color: "#6B7280" },
+          "& .MuiOutlinedInput-notchedOutline": { borderColor: "#E5E7EB" },
+          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#D1D5DB",
+          },
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#F97316",
+            borderWidth: 2,
           },
         },
       },
     },
     MuiPaper: { styleOverrides: { root: { backgroundImage: "none" } } },
-    MuiCheckbox: { styleOverrides: { root: { "&.Mui-checked": { color: "#7C5CFC" } } } },
-    MuiLink: { styleOverrides: { root: { color: "#7C5CFC" } } },
+    MuiCheckbox: { styleOverrides: { root: { "&.Mui-checked": { color: "#F97316" } } } },
+    MuiLink: { styleOverrides: { root: { color: "#EA580C" } } },
     MuiAlert: {
       styleOverrides: {
         root: { borderRadius: 10 },
-        standardError: { backgroundColor: "#FEF2F2", color: "#991B1B" },
       },
     },
-    MuiDivider: { styleOverrides: { root: { borderColor: "rgba(0,0,0,0.08)" } } },
+    MuiDivider: { styleOverrides: { root: { borderColor: "#E5E7EB" } } },
     MuiFormHelperText: { styleOverrides: { root: { color: "#9CA3AF" } } },
   },
 });
+
+const highlights = [
+  {
+    title: "Streamlined sales pipeline",
+    desc: "Track every deal from first touch to close in a single view.",
+  },
+  {
+    title: "AI-powered insights",
+    desc: "Let automation surface the next best action for your team.",
+  },
+  {
+    title: "Everything in one place",
+    desc: "Contacts, opportunities, and activity, unified across your org.",
+  },
+];
 
 export function AuthLayout() {
   const isAuthenticated = useAuthStore((s) => !!s.accessToken);
@@ -59,233 +91,176 @@ export function AuthLayout() {
     <ThemeProvider theme={lightTheme}>
       <Box
         sx={{
+          minHeight: "100dvh",
           display: "flex",
-          minHeight: "100vh",
-          bgcolor: "#FAFAFA",
-          position: "relative",
-          overflow: "hidden",
+          background: `
+            radial-gradient(ellipse 80% 60% at 0% 0%, rgba(234,88,12,0.06) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 100% 100%, rgba(251,146,60,0.05) 0%, transparent 55%),
+            #FFF9F5
+          `,
         }}
       >
-        <style>{`
-          @keyframes float-slow {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(15px, -15px) scale(1.02); }
-            66% { transform: translate(-10px, 10px) scale(0.98); }
-          }
-          @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-60px); }
-            to { opacity: 1; transform: translateX(0); }
-          }
-          @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(60px); }
-            to { opacity: 1; transform: translateX(0); }
-          }
-        `}</style>
-
         <Box
           sx={{
-            position: "absolute",
-            inset: 0,
-            background: `
-              radial-gradient(ellipse 70% 50% at 0% 20%, rgba(124,92,252,0.06) 0%, transparent 60%),
-              radial-gradient(ellipse 50% 60% at 100% 80%, rgba(236,72,153,0.04) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 40% at 50% 50%, rgba(6,182,212,0.03) 0%, transparent 50%)
-            `,
-          }}
-        />
-
-        <Box
-          sx={{
-            position: "absolute",
-            top: "5%",
-            left: "3%",
-            width: 180,
-            height: 180,
-            borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%",
-            background: "linear-gradient(135deg, rgba(124,92,252,0.08), rgba(236,72,153,0.05))",
-            animation: "float-slow 12s ease-in-out infinite",
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: "8%",
-            right: "5%",
-            width: 220,
-            height: 220,
-            borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%",
-            background: "linear-gradient(135deg, rgba(6,182,212,0.06), rgba(124,92,252,0.04))",
-            animation: "float-slow 15s ease-in-out infinite reverse",
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            right: "15%",
-            width: 100,
-            height: 100,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(251,191,36,0.06) 0%, transparent 70%)",
-            animation: "float-slow 10s ease-in-out infinite",
-          }}
-        />
-
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `
-              linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: "60px 60px",
-          }}
-        />
-
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
+            flex: "1 1 50%",
+            display: { xs: "none", md: "flex" },
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: { md: 5, lg: 6 },
+            p: { md: 5, lg: 8 },
             position: "relative",
-            zIndex: 1,
+            overflow: "hidden",
           }}
         >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <Box component="img" src="/business-person.svg" alt="hertex cultivate" sx={{ width: 36, height: 36 }} />
+            <Typography
+              sx={{
+                fontSize: "1.15rem",
+                fontWeight: 700,
+                fontFamily: '"DM Sans", "Inter", sans-serif',
+                color: "#111827",
+                letterSpacing: "-0.02em",
+                textTransform: "uppercase",
+              }}
+            >
+              hertex cultivate
+            </Typography>
+          </Box>
+
           <Box
             sx={{
-              flex: 1,
-              display: { xs: "none", lg: "flex" },
+              display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
-              px: 12,
-              py: 6,
-              animation: "slideInLeft 0.7s ease-out",
+              gap: { md: 4, lg: 5 },
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 4 }}>
-              <Box
-                component="img"
-                src="/tzaho.png"
-                alt="TZAHU CRM"
-                sx={{ width: 44, height: 44 }}
-              />
+            <Box sx={{ maxWidth: 440 }}>
               <Typography
                 sx={{
-                  fontSize: "1.4rem",
-                  fontWeight: 800,
-                  color: "#1A1A2E",
-                  letterSpacing: "0.3px",
-                }}
-              >
-                TZAHU CRM
-              </Typography>
-            </Box>
-
-            <Box sx={{ maxWidth: 500 }}>
-              <Typography
-                sx={{
-                  fontSize: "2.8rem",
-                  fontWeight: 800,
-                  color: "#1A1A2E",
-                  lineHeight: 1.15,
-                  letterSpacing: "-1.5px",
-                  mb: 1.5,
+                  fontSize: { md: "2.4rem", lg: "2.8rem" },
+                  fontWeight: 700,
+                  fontFamily: '"DM Sans", "Inter", sans-serif',
+                  color: "#111827",
+                  lineHeight: 1.12,
+                  letterSpacing: "-0.035em",
+                  mb: 2.5,
                 }}
               >
                 Your business,
+                <br />
+                <Box component="span" sx={{ color: "#F97316" }}>
+                  intelligently
+                </Box>{" "}
+                organized.
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: "2.8rem",
-                  fontWeight: 800,
-                  lineHeight: 1.15,
-                  letterSpacing: "-1.5px",
-                  mb: 3,
-                  background: "linear-gradient(135deg, #7C5CFC, #EC4899)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                intelligently organized.
-              </Typography>
-
               <Typography
                 sx={{
                   color: "#6B7280",
                   fontSize: "1rem",
                   lineHeight: 1.7,
-                  mb: 5,
                 }}
               >
-                    TZAHU CRM brings together your sales, marketing, and customer data in one beautiful platform.
+                hertex cultivate brings together your sales, marketing, and customer data in one
+                beautiful platform.
               </Typography>
             </Box>
 
-            <Box sx={{ display: "flex", gap: 4 }}>
-              {[
-                { value: "10x", label: "Faster pipeline" },
-                { value: "99.9%", label: "Uptime SLA" },
-                { value: "50+", label: "Integrations" },
-              ].map((stat) => (
-                <Box key={stat.label}>
-                  <Typography
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              {highlights.map((h) => (
+                <Box key={h.title} sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+                  <Box
                     sx={{
-                      fontSize: "1.5rem",
+                      width: 24,
+                      height: 24,
+                      mt: 0.2,
+                      borderRadius: "50%",
+                      bgcolor: "#F97316",
+                      color: "#FFFFFF",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.75rem",
                       fontWeight: 700,
-                      color: "#7C5CFC",
-                      lineHeight: 1.2,
+                      flexShrink: 0,
                     }}
                   >
-                    {stat.value}
+                    <CheckIcon sx={{ fontSize: 14 }} />
+                  </Box>
+                  <Box>
+                  <Typography
+                    sx={{
+                      fontSize: "0.95rem",
+                      fontWeight: 600,
+                      fontFamily: '"DM Sans", "Inter", sans-serif',
+                      color: "#111827",
+                      mb: 0.25,
+                    }}
+                  >
+                    {h.title}
                   </Typography>
-                  <Typography sx={{ color: "#9CA3AF", fontSize: "0.8rem", mt: 0.5 }}>
-                    {stat.label}
+                  <Typography sx={{ fontSize: "0.85rem", color: "#6B7280", lineHeight: 1.5 }}>
+                    {h.desc}
                   </Typography>
                 </Box>
-              ))}
+              </Box>
+            ))}
             </Box>
           </Box>
+        </Box>
 
           <Box
             sx={{
-              flex: 1,
+              flex: "1 1 50%",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
               alignItems: "center",
-              px: 4,
-              py: 6,
-              animation: "slideInRight 0.7s ease-out 0.15s both",
+              justifyContent: "center",
+              width: "100%",
+              px: { xs: 2, sm: 4 },
+              py: { xs: 4, sm: 6 },
+            }}
+          >
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 420,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
             <Box
               sx={{
-                display: { xs: "flex", lg: "none" },
-                flexDirection: "column",
+                display: { xs: "flex", md: "none" },
                 alignItems: "center",
+                gap: 1.5,
                 mb: 4,
               }}
             >
-              <Box
-                component="img"
-                src="/tzaho.png"
-                alt="TZAHU CRM"
-                sx={{ width: 40, height: 40, mb: 1 }}
-              />
-              <Typography sx={{ fontSize: "1.2rem", fontWeight: 700, color: "#1A1A2E" }}>
-                TZAHU CRM
+              <Box component="img" src="/business-person.svg" alt="hertex cultivate" sx={{ width: 36, height: 36 }} />
+              <Typography
+                sx={{
+                  fontSize: "1.15rem",
+                  fontWeight: 700,
+                  fontFamily: '"DM Sans", "Inter", sans-serif',
+                  color: "#111827",
+                  letterSpacing: "-0.02em",
+                  textTransform: "uppercase",
+                }}
+              >
+                hertex cultivate
               </Typography>
             </Box>
 
             <Box
               sx={{
                 width: "100%",
-                maxWidth: 420,
-                bgcolor: "#FFF",
-                borderRadius: 3,
-                p: 4,
-                boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04)",
-                border: "1px solid rgba(0,0,0,0.04)",
+                bgcolor: "#FFFFFF",
+                borderRadius: 2,
+                p: { xs: 3, sm: 4 },
+                border: "1px solid #E5E7EB",
+                boxShadow: "0 1px 2px rgba(16,24,40,0.04)",
               }}
             >
               <Outlet />

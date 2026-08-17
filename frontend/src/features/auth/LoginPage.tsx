@@ -9,13 +9,9 @@ import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
 import InputAdornment from "@mui/material/InputAdornment";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import GoogleIcon from "@mui/icons-material/Google";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import MicrosoftIcon from "@mui/icons-material/Microsoft";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import api from "@services/api";
@@ -65,10 +61,13 @@ export function LoginPage() {
           variant="h4"
           sx={{ fontWeight: 800, color: "#111827", fontSize: "1.6rem", letterSpacing: "-0.5px" }}
         >
-          Welcome back
-        </Typography>
-        <Typography variant="body2" sx={{ color: "#6B7280", mt: 0.5, fontSize: "0.9rem" }}>
-          Sign in to your account to continue
+          <Box component="span" sx={{ color: "#F97316" }}>
+            Welcome back
+          </Box>
+          {", "}
+          <Box component="span" sx={{ color: "#111827" }}>
+            sign in
+          </Box>
         </Typography>
       </Box>
 
@@ -120,7 +119,7 @@ export function LoginPage() {
             component={RouterLink}
             to="/forgot-password"
             underline="hover"
-            sx={{ fontSize: "0.8rem", fontWeight: 500, color: "#7C5CFC" }}
+            sx={{ fontSize: "0.8rem", fontWeight: 500, color: "#EA580C" }}
           >
             Forgot password?
           </Link>
@@ -164,25 +163,6 @@ export function LoginPage() {
           }}
         />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              defaultChecked
-              size="small"
-              sx={{
-                color: "#D1D5DB",
-                "&.Mui-checked": { color: "#7C5CFC" },
-              }}
-            />
-          }
-          label={
-            <Typography sx={{ fontSize: "0.85rem", color: "#6B7280", fontWeight: 500 }}>
-              Remember me
-            </Typography>
-          }
-          sx={{ mb: 3 }}
-        />
-
         <Button
           type="submit"
           variant="contained"
@@ -191,13 +171,14 @@ export function LoginPage() {
           disabled={loading}
           sx={{
             py: 1.5,
-            bgcolor: "#7C5CFC",
+            bgcolor: "#EA580C",
             color: "#fff",
             fontSize: "0.95rem",
             fontWeight: 700,
-            borderRadius: 1.5,
-            "&:hover": { bgcolor: "#6B4CE6", boxShadow: "0 4px 12px rgba(124,92,252,0.3)" },
-            "&.Mui-disabled": { bgcolor: "#7C5CFC", opacity: 0.6, color: "#fff" },
+            borderRadius: 1,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
+            "&:hover": { bgcolor: "#C2410C", boxShadow: "0 4px 12px rgba(234,88,12,0.25)" },
+            "&.Mui-disabled": { bgcolor: "#EA580C", opacity: 0.6, color: "#fff" },
           }}
         >
           {loading ? (
@@ -239,58 +220,16 @@ export function LoginPage() {
             borderColor: "#D1D5DB",
             color: "#374151",
             bgcolor: "#FFF",
-            fontSize: "0.9rem",
-            fontWeight: 600,
-            borderRadius: 1.5,
-            "&:hover": { borderColor: "#9CA3AF", bgcolor: "#F9FAFB" },
+              fontSize: "0.9rem",
+              fontWeight: 600,
+              borderRadius: 1,
+              "&:hover": { borderColor: "#9CA3AF", bgcolor: "#F9FAFB" },
             justifyContent: "center",
             gap: 1.5,
           }}
         >
           Continue with Google
         </Button>
-        <Box sx={{ display: "flex", gap: 1.5 }}>
-          <Button
-            variant="outlined"
-            fullWidth
-            size="large"
-            startIcon={<GitHubIcon sx={{ fontSize: 20 }} />}
-            sx={{
-              py: 1.3,
-              borderColor: "#D1D5DB",
-              color: "#374151",
-              bgcolor: "#FFF",
-              fontSize: "0.9rem",
-              fontWeight: 600,
-              borderRadius: 1.5,
-              "&:hover": { borderColor: "#9CA3AF", bgcolor: "#F9FAFB" },
-              justifyContent: "center",
-              gap: 1.5,
-            }}
-          >
-            GitHub
-          </Button>
-          <Button
-            variant="outlined"
-            fullWidth
-            size="large"
-            startIcon={<MicrosoftIcon sx={{ fontSize: 20 }} />}
-            sx={{
-              py: 1.3,
-              borderColor: "#D1D5DB",
-              color: "#374151",
-              bgcolor: "#FFF",
-              fontSize: "0.9rem",
-              fontWeight: 600,
-              borderRadius: 1.5,
-              "&:hover": { borderColor: "#9CA3AF", bgcolor: "#F9FAFB" },
-              justifyContent: "center",
-              gap: 1.5,
-            }}
-          >
-            Microsoft
-          </Button>
-        </Box>
       </Box>
 
       <Typography
@@ -306,7 +245,7 @@ export function LoginPage() {
           component={RouterLink}
           to="/register"
           underline="hover"
-          sx={{ color: "#7C5CFC", fontWeight: 700 }}
+          sx={{ color: "#EA580C", fontWeight: 700 }}
         >
           Create one now
         </Link>
