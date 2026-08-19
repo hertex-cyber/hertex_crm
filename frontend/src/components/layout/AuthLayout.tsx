@@ -257,10 +257,10 @@ export function AuthLayout() {
                 width: "100%",
                 bgcolor: "rgba(255,253,248,0.78)",
                 backdropFilter: "blur(18px)",
-                borderRadius: 3,
+                borderRadius: "14px",
                 p: { xs: 3, sm: 4 },
                 border: "1px solid rgba(127, 101, 76, 0.18)",
-                boxShadow: "0 24px 64px rgba(73, 54, 42, 0.10), 0 2px 8px rgba(73, 54, 42, 0.04)",
+                boxShadow: "0 24px 64px rgba(73, 54, 42, 0.18), 0 4px 16px rgba(73, 54, 42, 0.10)",
               }}
             >
               <Outlet />

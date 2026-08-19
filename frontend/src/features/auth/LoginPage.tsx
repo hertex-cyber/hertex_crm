@@ -151,7 +151,7 @@ export function LoginPage() {
           disabled={loading}
           sx={{
             bgcolor: "#49362A",
-            borderRadius: 2,
+            borderRadius: "8px",
             boxShadow: "0 4px 12px rgba(73,54,42,0.16)",
             color: "#FFFDF8",
             fontSize: "0.95rem",
@@ -183,7 +183,7 @@ export function LoginPage() {
         sx={{
           bgcolor: "rgba(255,253,248,0.65)",
           borderColor: "#D7C9B6",
-          borderRadius: 2,
+          borderRadius: "8px",
           color: "#554437",
           fontSize: "0.9rem",
           fontWeight: 700,

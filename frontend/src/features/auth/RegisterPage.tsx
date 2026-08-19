@@ -108,7 +108,7 @@ export function RegisterPage() {
           size="large"
           disabled={loading || !formFilled}
           sx={{
-            bgcolor: "#49362A", borderRadius: 2, boxShadow: "0 4px 12px rgba(73,54,42,0.16)", color: "#FFFDF8", fontSize: "0.95rem", fontWeight: 700, py: 1.5,
+            bgcolor: "#49362A", borderRadius: "8px", boxShadow: "0 4px 12px rgba(73,54,42,0.16)", color: "#FFFDF8", fontSize: "0.95rem", fontWeight: 700, py: 1.5,
             transition: "transform 160ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms cubic-bezier(0.23, 1, 0.32, 1)",
             "&:hover": { bgcolor: "#35251C", boxShadow: "0 8px 22px rgba(73,54,42,0.22)", transform: "translateY(-1px)" }, "&:active": { transform: "scale(0.98)" }, "&.Mui-disabled": { bgcolor: "#49362A", color: "#FFFDF8", opacity: 0.6 },
           }}
@@ -123,7 +123,7 @@ export function RegisterPage() {
         <Divider sx={{ borderColor: "#E4D9C9", flex: 1 }} />
       </Box>
 
-      <Button variant="outlined" fullWidth size="large" startIcon={<GoogleIcon sx={{ fontSize: 20 }} />} sx={{ bgcolor: "rgba(255,253,248,0.65)", borderColor: "#D7C9B6", borderRadius: 2, color: "#554437", fontSize: "0.9rem", fontWeight: 700, gap: 1.5, justifyContent: "center", py: 1.3, "&:hover": { bgcolor: "#FFFDF8", borderColor: "#9A876E" } }}>
+      <Button variant="outlined" fullWidth size="large" startIcon={<GoogleIcon sx={{ fontSize: 20 }} />} sx={{ bgcolor: "rgba(255,253,248,0.65)", borderColor: "#D7C9B6", borderRadius: "8px", color: "#554437", fontSize: "0.9rem", fontWeight: 700, gap: 1.5, justifyContent: "center", py: 1.3, "&:hover": { bgcolor: "#FFFDF8", borderColor: "#9A876E" } }}>
         Continue with Google
       </Button>
 
