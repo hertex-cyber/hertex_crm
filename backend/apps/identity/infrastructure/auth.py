@@ -18,10 +18,14 @@ class JWTAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
         auth_header = request.headers.get("Authorization", "")
-        if not auth_header.startswith("Bearer "):
+        if auth_header.startswith("Bearer "):
+            token = auth_header.split(" ", 1)[1]
+        else:
+            # Fallback for clients/proxies that strip the Authorization header
+            # (e.g. sandbox preview proxies). Same JWT, custom header.
+            token = request.headers.get("X-Access-Token", "")
+        if not token:
             return None
-
-        token = auth_header.split(" ", 1)[1]
 
         try:
             payload = jwt.decode(

@@ -25,6 +25,19 @@ export function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [values, setValues] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
+
+  const formFilled = [values.first_name, values.last_name, values.email, values.password].every(
+    (field) => field.trim().length > 0
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,6 +95,8 @@ export function RegisterPage() {
           <TextField
             name="first_name"
             placeholder="First name"
+            value={values.first_name}
+            onChange={handleChange}
             fullWidth
             required
             slotProps={{
@@ -97,6 +112,8 @@ export function RegisterPage() {
           <TextField
             name="last_name"
             placeholder="Last name"
+            value={values.last_name}
+            onChange={handleChange}
             fullWidth
             required
             slotProps={{
@@ -115,6 +132,8 @@ export function RegisterPage() {
           id="reg-email"
           name="email"
           type="email"
+          value={values.email}
+          onChange={handleChange}
           fullWidth
           required
           placeholder="you@company.com"
@@ -134,6 +153,8 @@ export function RegisterPage() {
           id="reg-password"
           name="password"
           type={showPassword ? "text" : "password"}
+          value={values.password}
+          onChange={handleChange}
           fullWidth
           required
           placeholder="Create a strong password"
@@ -201,7 +222,7 @@ export function RegisterPage() {
           variant="contained"
           fullWidth
           size="large"
-          disabled={loading}
+          disabled={loading || !formFilled}
           sx={{
             py: 1.5,
             bgcolor: "#EA580C",
