@@ -1,23 +1,25 @@
 import { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
 import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
 import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
-import InputAdornment from "@mui/material/InputAdornment";
-import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import PersonIcon from "@mui/icons-material/Person";
+import InputAdornment from "@mui/material/InputAdornment";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import EmailIcon from "@mui/icons-material/Email";
-import LockIcon from "@mui/icons-material/Lock";
 import GoogleIcon from "@mui/icons-material/Google";
+import LockIcon from "@mui/icons-material/Lock";
+import PersonIcon from "@mui/icons-material/Person";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import api from "@services/api";
+
+const iconSx = { color: "#A59480", fontSize: 20 };
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -25,40 +27,33 @@ export function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [values, setValues] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
-  });
+  const [values, setValues] = useState({ first_name: "", last_name: "", email: "", password: "" });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setValues((current) => ({ ...current, [event.target.name]: event.target.value }));
 
-  const formFilled = [values.first_name, values.last_name, values.email, values.password].every(
-    (field) => field.trim().length > 0
-  );
+  const formFilled = Object.values(values).every((field) => field.trim().length > 0);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setError("");
     if (!agreed) {
       setError("Please agree to the Terms of Service and Privacy Policy to continue.");
       return;
     }
+
     setLoading(true);
-    const data = new FormData(e.currentTarget);
-    const payload = {
-      email: data.get("email"),
-      password: data.get("password"),
-      first_name: data.get("first_name"),
-      last_name: data.get("last_name"),
-    };
+    const data = new FormData(event.currentTarget);
     try {
-      await api.post("/auth/register", payload);
+      await api.post("/auth/register", {
+        email: data.get("email"),
+        password: data.get("password"),
+        first_name: data.get("first_name"),
+        last_name: data.get("last_name"),
+      });
       navigate("/login", { replace: true });
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || "Unable to create account. Please try again.");
+    } catch (requestError: any) {
+      setError(requestError.response?.data?.error?.message || "Unable to create account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -66,155 +61,44 @@ export function RegisterPage() {
 
   return (
     <Box>
-      <Box sx={{ textAlign: "center", mb: 3 }}>
-        <Typography
-          variant="h4"
-          sx={{ fontWeight: 800, color: "#111827", fontSize: "1.6rem", letterSpacing: "-0.5px" }}
-        >
-          <Box component="span" sx={{ color: "#F97316" }}>
-            Create account
-          </Box>
-          {", "}
-          <Box component="span" sx={{ color: "#111827" }}>
-            sign up
-          </Box>
+      <Box sx={{ mb: 2.75, textAlign: "center" }}>
+        <Typography variant="h4" sx={{ color: "#38291F", fontFamily: '"DM Serif Display", Georgia, serif', fontSize: { xs: "1.65rem", sm: "1.85rem" }, fontWeight: 400, letterSpacing: "-0.05em", lineHeight: 1.06 }}>
+          <Box component="span" sx={{ color: "#5F725D" }}>Create your account</Box>
         </Typography>
       </Box>
 
-      {error && (
-        <Alert
-          severity="error"
-          sx={{ mb: 2.5, borderRadius: 1.5, "& .MuiAlert-message": { fontWeight: 500, fontSize: "0.85rem" } }}
-        >
-          {error}
-        </Alert>
-      )}
+      {error && <Alert severity="error" sx={{ mb: 2.5, borderRadius: 2, "& .MuiAlert-message": { fontSize: "0.85rem", fontWeight: 600 } }}>{error}</Alert>}
 
-      <Box component="form" onSubmit={handleSubmit} noValidate>
+      <Box component="form" noValidate onSubmit={handleSubmit}>
         <Box sx={{ display: "flex", gap: 1.5, mb: 2.5 }}>
-          <TextField
-            name="first_name"
-            placeholder="First name"
-            value={values.first_name}
-            onChange={handleChange}
-            fullWidth
-            required
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: "#9CA3AF", fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-          <TextField
-            name="last_name"
-            placeholder="Last name"
-            value={values.last_name}
-            onChange={handleChange}
-            fullWidth
-            required
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: "#9CA3AF", fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
+          <TextField name="first_name" placeholder="First name" value={values.first_name} onChange={handleChange} fullWidth required slotProps={{ input: { startAdornment: <InputAdornment position="start"><PersonIcon sx={iconSx} /></InputAdornment> } }} />
+          <TextField name="last_name" placeholder="Last name" value={values.last_name} onChange={handleChange} fullWidth required slotProps={{ input: { startAdornment: <InputAdornment position="start"><PersonIcon sx={iconSx} /></InputAdornment> } }} />
         </Box>
 
-        <TextField
-          id="reg-email"
-          name="email"
-          type="email"
-          value={values.email}
-          onChange={handleChange}
-          fullWidth
-          required
-          placeholder="you@company.com"
-          sx={{ mb: 2.5 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon sx={{ color: "#9CA3AF", fontSize: 20 }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
+        <TextField id="reg-email" name="email" type="email" placeholder="you@company.com" value={values.email} onChange={handleChange} fullWidth required sx={{ mb: 2.5 }} slotProps={{ input: { startAdornment: <InputAdornment position="start"><EmailIcon sx={iconSx} /></InputAdornment> } }} />
 
         <TextField
           id="reg-password"
           name="password"
           type={showPassword ? "text" : "password"}
+          placeholder="Create a strong password"
           value={values.password}
           onChange={handleChange}
           fullWidth
           required
-          placeholder="Create a strong password"
           sx={{ mb: 2 }}
           slotProps={{
             input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon sx={{ color: "#9CA3AF", fontSize: 20 }} />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Box
-                    component="button"
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    sx={{
-                      border: "none",
-                      bgcolor: "transparent",
-                      cursor: "pointer",
-                      p: 0.5,
-                      display: "flex",
-                      color: "#9CA3AF",
-                      "&:hover": { color: "#4B5563" },
-                    }}
-                  >
-                    {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-                  </Box>
-                </InputAdornment>
-              ),
+              startAdornment: <InputAdornment position="start"><LockIcon sx={iconSx} /></InputAdornment>,
+              endAdornment: <InputAdornment position="end"><Box aria-label={showPassword ? "Hide password" : "Show password"} component="button" type="button" onClick={() => setShowPassword((visible) => !visible)} sx={{ alignItems: "center", bgcolor: "transparent", border: 0, color: "#A59480", cursor: "pointer", display: "flex", p: 0.5, "&:hover": { color: "#554437" } }}>{showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}</Box></InputAdornment>,
             },
           }}
         />
 
         <FormControlLabel
-          control={
-            <Checkbox
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              size="small"
-              sx={{
-                color: "#D1D5DB",
-                "&.Mui-checked": { color: "#F97316" },
-              }}
-            />
-          }
-          label={
-            <Typography sx={{ fontSize: "0.82rem", color: "#6B7280", fontWeight: 500 }}>
-              I agree to the{" "}
-              <Box component="span" sx={{ color: "#EA580C", cursor: "pointer", fontWeight: 600 }}>
-                Terms of Service
-              </Box>{" "}
-              and{" "}
-              <Box component="span" sx={{ color: "#EA580C", cursor: "pointer", fontWeight: 600 }}>
-                Privacy Policy
-              </Box>
-            </Typography>
-          }
-          sx={{ mb: 2.5, alignItems: "flex-start" }}
+          sx={{ alignItems: "flex-start", mb: 2.5 }}
+          control={<Checkbox checked={agreed} onChange={(event) => setAgreed(event.target.checked)} size="small" sx={{ color: "#C7B9A5", "&.Mui-checked": { color: "#5F725D" } }} />}
+          label={<Typography sx={{ color: "#756555", fontSize: "0.82rem", fontWeight: 500, lineHeight: 1.5 }}>I agree to the <Box component="span" sx={{ color: "#5F725D", cursor: "pointer", fontWeight: 700 }}>Terms of Service</Box> and <Box component="span" sx={{ color: "#5F725D", cursor: "pointer", fontWeight: 700 }}>Privacy Policy</Box></Typography>}
         />
 
         <Button
@@ -224,85 +108,27 @@ export function RegisterPage() {
           size="large"
           disabled={loading || !formFilled}
           sx={{
-            py: 1.5,
-            bgcolor: "#EA580C",
-            color: "#fff",
-            fontSize: "0.95rem",
-            fontWeight: 700,
-            borderRadius: 1,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
-            "&:hover": { bgcolor: "#C2410C", boxShadow: "0 4px 12px rgba(234,88,12,0.25)" },
-            "&.Mui-disabled": { bgcolor: "#EA580C", opacity: 0.6, color: "#fff" },
+            bgcolor: "#49362A", borderRadius: 2, boxShadow: "0 4px 12px rgba(73,54,42,0.16)", color: "#FFFDF8", fontSize: "0.95rem", fontWeight: 700, py: 1.5,
+            transition: "transform 160ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms cubic-bezier(0.23, 1, 0.32, 1)",
+            "&:hover": { bgcolor: "#35251C", boxShadow: "0 8px 22px rgba(73,54,42,0.22)", transform: "translateY(-1px)" }, "&:active": { transform: "scale(0.98)" }, "&.Mui-disabled": { bgcolor: "#49362A", color: "#FFFDF8", opacity: 0.6 },
           }}
         >
-          {loading ? (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-              <CircularProgress size={18} sx={{ color: "#fff" }} />
-              <span>Creating account...</span>
-            </Box>
-          ) : (
-            "Create account"
-          )}
+          {loading ? <Box sx={{ alignItems: "center", display: "flex", gap: 1.5 }}><CircularProgress size={18} sx={{ color: "#FFFDF8" }} />Creating account...</Box> : "Create account"}
         </Button>
       </Box>
 
-      <Box sx={{ my: 3, display: "flex", alignItems: "center", gap: 1.5 }}>
-        <Divider sx={{ flex: 1, borderColor: "#E5E7EB" }} />
-        <Typography
-          sx={{
-            fontSize: "0.75rem",
-            color: "#9CA3AF",
-            fontWeight: 600,
-            letterSpacing: "0.5px",
-            textTransform: "uppercase",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Or continue with
-        </Typography>
-        <Divider sx={{ flex: 1, borderColor: "#E5E7EB" }} />
+      <Box sx={{ alignItems: "center", display: "flex", gap: 1.5, my: 3 }}>
+        <Divider sx={{ borderColor: "#E4D9C9", flex: 1 }} />
+        <Typography sx={{ color: "#A59480", fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", whiteSpace: "nowrap" }}>Or continue with</Typography>
+        <Divider sx={{ borderColor: "#E4D9C9", flex: 1 }} />
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-        <Button
-          variant="outlined"
-          fullWidth
-          size="large"
-          startIcon={<GoogleIcon sx={{ fontSize: 20 }} />}
-          sx={{
-            py: 1.3,
-            borderColor: "#D1D5DB",
-            color: "#374151",
-            bgcolor: "#FFF",
-            fontSize: "0.9rem",
-            fontWeight: 600,
-            borderRadius: 1,
-            "&:hover": { borderColor: "#9CA3AF", bgcolor: "#F9FAFB" },
-            justifyContent: "center",
-            gap: 1.5,
-          }}
-        >
-          Continue with Google
-        </Button>
-      </Box>
+      <Button variant="outlined" fullWidth size="large" startIcon={<GoogleIcon sx={{ fontSize: 20 }} />} sx={{ bgcolor: "rgba(255,253,248,0.65)", borderColor: "#D7C9B6", borderRadius: 2, color: "#554437", fontSize: "0.9rem", fontWeight: 700, gap: 1.5, justifyContent: "center", py: 1.3, "&:hover": { bgcolor: "#FFFDF8", borderColor: "#9A876E" } }}>
+        Continue with Google
+      </Button>
 
-      <Typography
-        sx={{
-          textAlign: "center",
-          mt: 3.5,
-          fontSize: "0.85rem",
-          color: "#6B7280",
-        }}
-      >
-        Already have an account?{" "}
-        <Link
-          component={RouterLink}
-          to="/login"
-          underline="hover"
-          sx={{ color: "#EA580C", fontWeight: 700 }}
-        >
-          Sign in
-        </Link>
+      <Typography sx={{ color: "#756555", fontSize: "0.85rem", mt: 3.5, textAlign: "center" }}>
+        Already have an account? {" "}<Link component={RouterLink} to="/login" underline="hover" sx={{ color: "#5F725D", fontWeight: 700 }}>Sign in</Link>
       </Typography>
     </Box>
   );

@@ -4,22 +4,23 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CheckIcon from "@mui/icons-material/Check";
 import { useAuthStore } from "@store/authStore";
+import Background from "./Background";
 
 const lightTheme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: "#F97316", light: "#FDBA74", dark: "#EA580C" },
-    text: { primary: "#111827", secondary: "#6B7280" },
-    background: { default: "#FFFFFF", paper: "#FFFFFF" },
-    divider: "#E5E7EB",
+    primary: { main: "#49362A", light: "#C9BBA4", dark: "#302017" },
+    text: { primary: "#38291F", secondary: "#756555" },
+    background: { default: "#F8F4EC", paper: "#FFFDF8" },
+    divider: "#E4D9C9",
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.03em" },
-    h2: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.025em" },
-    h3: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.02em" },
-    h4: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.02em" },
-    h5: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 700, letterSpacing: "-0.01em" },
+    h1: { fontFamily: '"DM Serif Display", Georgia, serif', fontWeight: 400, letterSpacing: "-0.04em" },
+    h2: { fontFamily: '"DM Serif Display", Georgia, serif', fontWeight: 400, letterSpacing: "-0.035em" },
+    h3: { fontFamily: '"DM Serif Display", Georgia, serif', fontWeight: 400, letterSpacing: "-0.03em" },
+    h4: { fontFamily: '"DM Serif Display", Georgia, serif', fontWeight: 400, letterSpacing: "-0.025em" },
+    h5: { fontFamily: '"DM Serif Display", Georgia, serif', fontWeight: 400, letterSpacing: "-0.02em" },
     h6: { fontFamily: '"DM Sans", "Inter", sans-serif', fontWeight: 600 },
   },
   shape: { borderRadius: 10 },
@@ -28,40 +29,40 @@ const lightTheme = createTheme({
       styleOverrides: {
         root: { textTransform: "none", fontWeight: 600, borderRadius: 8, fontSize: "0.9rem" },
         contained: { boxShadow: "none", "&:hover": { boxShadow: "none" } },
-        outlined: { borderColor: "#E5E7EB" },
+        outlined: { borderColor: "#DED2C0" },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
-            borderRadius: 6,
-            backgroundColor: "#FFFFFF",
-            "&:hover": { backgroundColor: "#FFFFFF" },
-            "&.Mui-focused": { backgroundColor: "#FFFFFF" },
+            borderRadius: 8,
+            backgroundColor: "rgba(255,253,248,0.9)",
+            "&:hover": { backgroundColor: "#FFFDF8" },
+            "&.Mui-focused": { backgroundColor: "#FFFDF8" },
           },
-          "& .MuiInputLabel-root": { color: "#6B7280" },
-          "& .MuiOutlinedInput-notchedOutline": { borderColor: "#E5E7EB" },
+          "& .MuiInputLabel-root": { color: "#756555" },
+          "& .MuiOutlinedInput-notchedOutline": { borderColor: "#DED2C0" },
           "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#D1D5DB",
+            borderColor: "#BBAA93",
           },
           "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#F97316",
+            borderColor: "#5F725D",
             borderWidth: 2,
           },
         },
       },
     },
     MuiPaper: { styleOverrides: { root: { backgroundImage: "none" } } },
-    MuiCheckbox: { styleOverrides: { root: { "&.Mui-checked": { color: "#F97316" } } } },
-    MuiLink: { styleOverrides: { root: { color: "#EA580C" } } },
+    MuiCheckbox: { styleOverrides: { root: { "&.Mui-checked": { color: "#5F725D" } } } },
+    MuiLink: { styleOverrides: { root: { color: "#5F725D" } } },
     MuiAlert: {
       styleOverrides: {
         root: { borderRadius: 10 },
       },
     },
-    MuiDivider: { styleOverrides: { root: { borderColor: "#E5E7EB" } } },
-    MuiFormHelperText: { styleOverrides: { root: { color: "#9CA3AF" } } },
+    MuiDivider: { styleOverrides: { root: { borderColor: "#E4D9C9" } } },
+    MuiFormHelperText: { styleOverrides: { root: { color: "#9B8B7A" } } },
   },
 });
 
@@ -93,13 +94,11 @@ export function AuthLayout() {
         sx={{
           minHeight: "100dvh",
           display: "flex",
-          background: `
-            radial-gradient(ellipse 80% 60% at 0% 0%, rgba(234,88,12,0.06) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 50% at 100% 100%, rgba(251,146,60,0.05) 0%, transparent 55%),
-            #FFF9F5
-          `,
+          position: "relative",
+          overflow: "hidden",
         }}
       >
+        <Background />
         <Box
           sx={{
             flex: "1 1 50%",
@@ -109,17 +108,18 @@ export function AuthLayout() {
             gap: { md: 5, lg: 6 },
             p: { md: 5, lg: 8 },
             position: "relative",
+            zIndex: 1,
             overflow: "hidden",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, position: "relative" }}>
             <Box component="img" src="/business-person.svg" alt="hertex cultivate" sx={{ width: 36, height: 36 }} />
             <Typography
               sx={{
-                fontSize: "1.15rem",
+                fontSize: "1.05rem",
                 fontWeight: 700,
-                fontFamily: '"DM Sans", "Inter", sans-serif',
-                color: "#111827",
+                fontFamily: '"DM Serif Display", Georgia, serif',
+                color: "#38291F",
                 letterSpacing: "-0.02em",
                 textTransform: "uppercase",
               }}
@@ -138,25 +138,22 @@ export function AuthLayout() {
             <Box sx={{ maxWidth: 440 }}>
               <Typography
                 sx={{
-                  fontSize: { md: "2.4rem", lg: "2.8rem" },
-                  fontWeight: 700,
-                  fontFamily: '"DM Sans", "Inter", sans-serif',
-                  color: "#111827",
-                  lineHeight: 1.12,
-                  letterSpacing: "-0.035em",
+                  fontSize: { md: "2.35rem", lg: "2.85rem" },
+                  fontWeight: 500,
+                  fontFamily: '"DM Serif Display", Georgia, serif',
+                  color: "#38291F",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.045em",
                   mb: 2.5,
                 }}
               >
-                Your business,
+                Grow with a clearer
                 <br />
-                <Box component="span" sx={{ color: "#F97316" }}>
-                  intelligently
-                </Box>{" "}
-                organized.
+                <Box component="span" sx={{ color: "#5F725D" }}>point of view.</Box>
               </Typography>
               <Typography
                 sx={{
-                  color: "#6B7280",
+                  color: "#756555",
                   fontSize: "1rem",
                   lineHeight: 1.7,
                 }}
@@ -175,7 +172,7 @@ export function AuthLayout() {
                       height: 24,
                       mt: 0.2,
                       borderRadius: "50%",
-                      bgcolor: "#F97316",
+                      bgcolor: "#5F725D",
                       color: "#FFFFFF",
                       display: "flex",
                       alignItems: "center",
@@ -192,14 +189,14 @@ export function AuthLayout() {
                     sx={{
                       fontSize: "0.95rem",
                       fontWeight: 600,
-                      fontFamily: '"DM Sans", "Inter", sans-serif',
-                      color: "#111827",
+                      fontFamily: '"DM Serif Display", Georgia, serif',
+                      color: "#38291F",
                       mb: 0.25,
                     }}
                   >
                     {h.title}
                   </Typography>
-                  <Typography sx={{ fontSize: "0.85rem", color: "#6B7280", lineHeight: 1.5 }}>
+                  <Typography sx={{ fontSize: "0.85rem", color: "#756555", lineHeight: 1.5 }}>
                     {h.desc}
                   </Typography>
                 </Box>
@@ -219,6 +216,8 @@ export function AuthLayout() {
               width: "100%",
               px: { xs: 2, sm: 4 },
               py: { xs: 4, sm: 6 },
+              position: "relative",
+              zIndex: 1,
             }}
           >
           <Box
@@ -241,10 +240,10 @@ export function AuthLayout() {
               <Box component="img" src="/business-person.svg" alt="hertex cultivate" sx={{ width: 36, height: 36 }} />
               <Typography
                 sx={{
-                  fontSize: "1.15rem",
+                  fontSize: "1.05rem",
                   fontWeight: 700,
                   fontFamily: '"DM Sans", "Inter", sans-serif',
-                  color: "#111827",
+                color: "#38291F",
                   letterSpacing: "-0.02em",
                   textTransform: "uppercase",
                 }}
@@ -256,11 +255,12 @@ export function AuthLayout() {
             <Box
               sx={{
                 width: "100%",
-                bgcolor: "#FFFFFF",
-                borderRadius: 2,
+                bgcolor: "rgba(255,253,248,0.78)",
+                backdropFilter: "blur(18px)",
+                borderRadius: 3,
                 p: { xs: 3, sm: 4 },
-                border: "1px solid #E5E7EB",
-                boxShadow: "0 1px 2px rgba(16,24,40,0.04)",
+                border: "1px solid rgba(127, 101, 76, 0.18)",
+                boxShadow: "0 24px 64px rgba(73, 54, 42, 0.10), 0 2px 8px rgba(73, 54, 42, 0.04)",
               }}
             >
               <Outlet />
