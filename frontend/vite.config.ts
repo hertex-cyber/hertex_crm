@@ -16,7 +16,7 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: [".monkeycode-ai.live"],
+    allowedHosts: [".monkeycode-ai.live", ".e2b.app"],
     proxy: {
       "/api": {
         target: "http://localhost:8000",
